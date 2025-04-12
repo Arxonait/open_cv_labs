@@ -75,7 +75,7 @@ public class ImageProcessor {
         frame.setSize(image.getWidth() + 50, image.getHeight() + 50);
         frame.add(new JLabel(icon));
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // окно остаётся, пока пользователь не закроет
     }
 
     /**
