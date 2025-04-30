@@ -9,9 +9,11 @@ import java.util.Locale;
 public class ImageAPI {
     private static final Logger log = Logger.getLogger(ImageAPI.class);
     private final ImageProcessor processor;
+    private final ImageTransformations transformations;
 
     public ImageAPI() throws Exception {
         processor = new ImageProcessor();
+        transformations = new ImageTransformations();
         log.info("Checking OS.....");
 
         switch (getOperatingSystemType()) {
@@ -58,5 +60,51 @@ public class ImageAPI {
     public void saveImage(String path, Mat img) {
         log.info("Saving image to " + path);
         processor.saveImage(path, img);
+    }
+
+    // --- Методы для трансформаций через API ---
+    public Mat applySobel(Mat img, int dx, int dy) {
+        log.info("Applying Sobel operator with dx=" + dx + ", dy=" + dy);
+        return transformations.applySobel(img, dx, dy);
+    }
+
+    public Mat applyLaplace(Mat img) {
+        log.info("Applying Laplace operator");
+        return transformations.applyLaplace(img);
+    }
+
+    public Mat flip(Mat img, int flipCode) {
+        log.info("Flipping image with code " + flipCode);
+        return transformations.flip(img, flipCode);
+    }
+
+    public Mat repeat(Mat img, int ny, int nx) {
+        log.info("Repeating image ny=" + ny + ", nx=" + nx);
+        return transformations.repeat(img, ny, nx);
+    }
+
+    public Mat concatImages(List<Mat> images, boolean horizontal) {
+        log.info("Concatenating images. Horizontal = " + horizontal);
+        return transformations.concatImages(images, horizontal);
+    }
+
+    public Mat resize(Mat img, int width, int height) {
+        log.info("Resizing image to " + width + "x" + height);
+        return transformations.resize(img, width, height);
+    }
+
+    public Mat rotate(Mat img, double angle, boolean keepContent) {
+        log.info("Rotating image by " + angle + " degrees, keepContent = " + keepContent);
+        return transformations.rotate(img, angle, keepContent);
+    }
+
+    public Mat shift(Mat img, int shiftX, int shiftY) {
+        log.info("Shifting image by X=" + shiftX + ", Y=" + shiftY);
+        return transformations.shift(img, shiftX, shiftY);
+    }
+
+    public Mat perspectiveTransform(Mat img) {
+        log.info("Applying perspective transformation");
+        return transformations.perspectiveTransform(img);
     }
 }

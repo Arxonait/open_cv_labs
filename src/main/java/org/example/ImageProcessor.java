@@ -1,12 +1,17 @@
 package org.example;
 
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageProcessor {
 
@@ -119,5 +124,44 @@ public class ImageProcessor {
      */
     public void saveImage(String path, Mat mat) {
         Imgcodecs.imwrite(path, mat);
+    }
+
+    /**
+     * Применяет оператор Лапласа к изображению.
+     */
+    public Mat laplaceOperatorTest(Mat mat) {
+        Mat gray = new Mat();
+        Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY);
+
+        Mat laplace = new Mat();
+        Imgproc.Laplacian(gray, laplace, CvType.CV_32F);
+
+        Mat absLaplace = new Mat();
+        Core.convertScaleAbs(laplace, absLaplace);
+
+        return absLaplace;
+    }
+
+    /**
+     * Повтор изображения по вертикали и горизонтали.
+     */
+    public Mat repeatImageTest(Mat mat, int nx, int ny) {
+        Mat repeated = new Mat();
+        Core.repeat(mat, ny, nx, repeated);
+        return repeated;
+    }
+
+    /**
+     * Объединение нескольких изображений в одно.
+     */
+    public Mat concatImagesTest(java.util.List<Mat> mats, boolean horizontal) {
+
+        Mat result = new Mat();
+        if (horizontal) {
+            Core.hconcat(mats, result);
+        } else {
+            Core.vconcat(mats, result);
+        }
+        return result;
     }
 }
