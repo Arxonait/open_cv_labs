@@ -145,7 +145,7 @@ public class ImageProcessor {
     /**
      * Повтор изображения по вертикали и горизонтали.
      */
-    public Mat repeatImageTest(Mat mat, int nx, int ny) {
+    public Mat repeatImage(Mat mat, int nx, int ny) {
         Mat repeated = new Mat();
         Core.repeat(mat, ny, nx, repeated);
         return repeated;
@@ -154,7 +154,7 @@ public class ImageProcessor {
     /**
      * Объединение нескольких изображений в одно.
      */
-    public Mat concatImagesTest(java.util.List<Mat> mats, boolean horizontal) {
+    public Mat concatImages(List<Mat> mats, boolean horizontal) {
 
         Mat result = new Mat();
         if (horizontal) {
@@ -163,5 +163,67 @@ public class ImageProcessor {
             Core.vconcat(mats, result);
         }
         return result;
+    }
+
+    public Mat flipImage(Mat mat, boolean horizontal) {
+        Mat flip = new Mat();
+        int flag_horizontal = 1;
+        if (!horizontal) {
+            flag_horizontal = 0;
+        }
+        Core.flip(mat, flip, flag_horizontal);
+        return flip;
+    }
+
+    /**
+     * Изменение размера изображения.
+     */
+    public Mat resizeImage(Mat mat, int width, int height) {
+        Mat resized = new Mat();
+        Imgproc.resize(mat, resized, new Size(width, height));
+        return resized;
+    }
+
+    /**
+     * Вращение изображения с обрезкой или без обрезки.
+     */
+    public Mat rotateImage(Mat mat, double angle, boolean keepContent) {
+        Point center = new Point(mat.cols() / 2.0, mat.rows() / 2.0);
+
+        Mat rotMat = Imgproc.getRotationMatrix2D(center, angle, 1.0);
+
+        Size size = keepContent ? new Size(mat.width(), mat.height()) : getRotatedSize(mat, angle);
+
+        Mat rotated = new Mat();
+        Imgproc.warpAffine(mat, rotated, rotMat, size, Imgproc.INTER_LINEAR, Core.BORDER_CONSTANT, new Scalar(0, 0, 0));
+
+        return rotated;
+    }
+
+    /**
+     * Вспомогательный метод для расчета размера без обрезки.
+     */
+    private Size getRotatedSize(Mat mat, double angle) {
+        double radians = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(radians));
+        double cos = Math.abs(Math.cos(radians));
+
+        int newWidth = (int) (mat.height() * sin + mat.width() * cos);
+        int newHeight = (int) (mat.height() * cos + mat.width() * sin);
+        return new Size(newWidth, newHeight);
+    }
+
+    /**
+     * Сдвиг изображения на заданное количество пикселей.
+     */
+    public Mat shiftImage(Mat mat, int shiftX, int shiftY) {
+
+        Mat translationMat = Mat.eye(2, 3, CvType.CV_32F);
+        translationMat.put(0, 2, shiftX);
+        translationMat.put(1, 2, shiftY);
+
+        Mat shifted = new Mat();
+        Imgproc.warpAffine(src, shifted, translationMat, src.size());
+        return shifted;
     }
 }
