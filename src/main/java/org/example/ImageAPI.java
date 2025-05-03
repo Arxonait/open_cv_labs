@@ -73,34 +73,34 @@ public class ImageAPI {
         return transformations.applyLaplace(img);
     }
 
-    public Mat flip(Mat img, int flipCode) {
-        log.info("Flipping image with code " + flipCode);
-        return transformations.flip(img, flipCode);
+    public Mat flip(Mat img, boolean horizontal) {
+        log.info("Flipping image horizontal " + horizontal);
+        return processor.flipImage(img, horizontal);
     }
 
     public Mat repeat(Mat img, int ny, int nx) {
         log.info("Repeating image ny=" + ny + ", nx=" + nx);
-        return transformations.repeat(img, ny, nx);
+        return processor.repeatImage(img, ny, nx);
     }
 
     public Mat concatImages(List<Mat> images, boolean horizontal) {
         log.info("Concatenating images. Horizontal = " + horizontal);
-        return transformations.concatImages(images, horizontal);
+        return processor.concatImages(images, horizontal);
     }
 
     public Mat resize(Mat img, int width, int height) {
         log.info("Resizing image to " + width + "x" + height);
-        return transformations.resize(img, width, height);
+        return processor.resizeImage(img, width, height);
     }
 
     public Mat rotate(Mat img, double angle, boolean keepContent) {
         log.info("Rotating image by " + angle + " degrees, keepContent = " + keepContent);
-        return transformations.rotate(img, angle, keepContent);
+        return processor.rotateImage(img, angle, keepContent);
     }
 
     public Mat shift(Mat img, int shiftX, int shiftY) {
         log.info("Shifting image by X=" + shiftX + ", Y=" + shiftY);
-        return transformations.shift(img, shiftX, shiftY);
+        return processor.shiftImage(img, shiftX, shiftY);
     }
 
     public Mat perspectiveTransform(Mat img) {
