@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.opencv.core.Mat;
 
 import java.util.Locale;
+import java.util.List;
 
 public class ImageAPI {
     private static final Logger log = Logger.getLogger(ImageAPI.class);

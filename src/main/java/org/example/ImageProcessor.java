@@ -1,8 +1,7 @@
 package org.example;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
+import org.opencv.core.*;
+import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -223,7 +222,7 @@ public class ImageProcessor {
         translationMat.put(1, 2, shiftY);
 
         Mat shifted = new Mat();
-        Imgproc.warpAffine(src, shifted, translationMat, src.size());
+        Imgproc.warpAffine(mat, shifted, translationMat, mat.size());
         return shifted;
     }
 }
