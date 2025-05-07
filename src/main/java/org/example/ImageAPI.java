@@ -63,7 +63,6 @@ public class ImageAPI {
         processor.saveImage(path, img);
     }
 
-    // --- Методы для трансформаций через API ---
     public Mat applySobel(Mat img, int dx, int dy, int ksize,
                           double scale, double delta, int borderType) {
         log.info("Applying Sobel operator with dx=" + dx + ", dy=" + dy + ", kernel size: " + ksize + ", scale: " + scale +
@@ -71,10 +70,12 @@ public class ImageAPI {
         return processor.applySobel(img, dx, dy, ksize, scale, delta, borderType);
     }
 
-//    public Mat applyLaplace(Mat img) {
-//        log.info("Applying Laplace operator");
-//        return transformations.applyLaplace(img);
-//    }
+    public Mat applyLaplace(Mat img, int ksize, double scale, double delta, int borderType) {
+        log.info("Applying Laplace operator with" + "ksize=" + ksize + ", " + "scale=" + scale + ", " +
+                "delta=" + delta + ", " +
+                "borderType=" + borderType);
+        return processor.applyLaplacian(img, ksize, scale, delta, borderType);
+    }
 
     public Mat flip(Mat img, boolean horizontal) {
         log.info("Flipping image horizontal " + horizontal);

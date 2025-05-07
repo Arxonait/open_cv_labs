@@ -156,19 +156,32 @@ public class ImageProcessor {
     }
 
     /**
-     * Применяет оператор Лапласа к изображению.
+     * Применяет оператор Лапласа к изображению
+     * @param srcImage исходное изображение
+     * @param ksize размер ядра (1, 3, 5 или 7)
+     * @param scale масштабный коэффициент
+     * @param delta смещение
+     * @param borderType тип границы (BORDER_DEFAULT и т.д.)
+     * @return Mat с результатом применения оператора Лапласа
      */
-    public Mat laplaceOperatorTest(Mat mat) {
-        Mat gray = new Mat();
-        Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY);
+    public Mat applyLaplacian(Mat srcImage, int ksize,
+                                     double scale, double delta, int borderType) {
+        // Конвертируем в grayscale если нужно
+        Mat grayImage = new Mat();
+        if (srcImage.channels() > 1) {
+            Imgproc.cvtColor(srcImage, grayImage, Imgproc.COLOR_BGR2GRAY);
+        } else {
+            grayImage = srcImage.clone();
+        }
 
-        Mat laplace = new Mat();
-        Imgproc.Laplacian(gray, laplace, CvType.CV_32F);
+        Mat result = new Mat();
+        Imgproc.Laplacian(grayImage, result, CvType.CV_32F, ksize, scale, delta, borderType);
 
-        Mat absLaplace = new Mat();
-        Core.convertScaleAbs(laplace, absLaplace);
+        // Конвертируем в 8-битное изображение для сохранения
+        Mat absResult = new Mat();
+        Core.convertScaleAbs(result, absResult);
 
-        return absLaplace;
+        return absResult;
     }
 
     /**

@@ -51,6 +51,18 @@ public class ImageApiTransformationsTest {
     }
 
     @Test
+    public void testLaplace3() {
+        Mat laplace = api.applyLaplace(original, 3, 1, 0, Core.BORDER_DEFAULT);
+        api.saveImage(outputDir + "laplace3x3.jpeg", laplace);
+    }
+
+    @Test
+    public void testLaplace5() {
+        Mat laplace = api.applyLaplace(original, 5, 1, 0, Core.BORDER_DEFAULT);
+        api.saveImage(outputDir + "laplace5x5.jpeg", laplace);
+    }
+
+    @Test
     public void testFlipVertical() {
         Mat flipped = api.flip(original, false);
         api.saveImage(outputDir + "flipped_vertical.jpeg", flipped);
