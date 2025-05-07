@@ -332,4 +332,97 @@ public class ImageProcessor {
 
         return shifted; // Возвращаем сдвинутое изображение
     }
+
+    /**
+     * Трансформация перспективы по 4 точкам
+     * @param srcImage исходное изображение
+     * @param srcPoints 4 исходные точки (обычно углы объекта)
+     * @param dstPoints 4 целевые точки (куда должны переместиться исходные)
+     * @param outputWidth ширина выходного изображения
+     * @param outputHeight высота выходного изображения
+     * @return преобразованное изображение
+     */
+    public Mat transformPerspective(Mat srcImage, Point[] srcPoints,
+                                           Point[] dstPoints, int outputWidth, int outputHeight) {
+        // Преобразуем массивы точек в форматы, понятные OpenCV
+        MatOfPoint2f srcMat = new MatOfPoint2f(srcPoints);
+        MatOfPoint2f dstMat = new MatOfPoint2f(dstPoints);
+
+        // Получаем матрицу преобразования
+        Mat perspectiveMatrix = Imgproc.getPerspectiveTransform(srcMat, dstMat);
+
+        // Применяем преобразование
+        Mat result = new Mat();
+        Imgproc.warpPerspective(srcImage, result, perspectiveMatrix, new Size(outputWidth, outputHeight));
+
+        return result;
+    }
+
+    /**
+     * Трансформация перспективы по заданному отклонению (углу)
+     * @param srcImage исходное изображение
+     * @param angle угол отклонения (в градусах)
+     * @param direction направление отклонения (TOP, BOTTOM, LEFT, RIGHT)
+     * @param intensity интенсивность эффекта (0-1)
+     * @return преобразованное изображение
+     */
+    public Mat transformPerspectiveWithDeviation(Mat srcImage, double angle,
+                                                        String direction, double intensity) {
+        int width = srcImage.width();
+        int height = srcImage.height();
+
+        // Исходные точки (углы изображения)
+        Point[] srcPoints = new Point[]{
+                new Point(0, 0),
+                new Point(width, 0),
+                new Point(width, height),
+                new Point(0, height)
+        };
+
+        // Рассчитываем целевые точки в зависимости от направления
+        Point[] dstPoints = calculateTargetPoints(width, height, angle, direction, intensity);
+
+        return transformPerspective(srcImage, srcPoints, dstPoints, width, height);
+    }
+
+    private static Point[] calculateTargetPoints(int width, int height,
+                                                 double angle, String direction, double intensity) {
+        // Преобразуем угол в радианы
+        double rad = Math.toRadians(angle);
+        // Максимальное смещение (зависит от интенсивности)
+        double maxShift = Math.min(width, height) * 0.3 * intensity;
+
+        Point[] points = new Point[4];
+
+        switch (direction.toUpperCase()) {
+            case "TOP":
+                points[0] = new Point(maxShift * Math.sin(rad), maxShift * Math.cos(rad));
+                points[1] = new Point(width - maxShift * Math.sin(rad), maxShift * Math.cos(rad));
+                points[2] = new Point(width, height);
+                points[3] = new Point(0, height);
+                break;
+            case "BOTTOM":
+                points[0] = new Point(0, 0);
+                points[1] = new Point(width, 0);
+                points[2] = new Point(width - maxShift * Math.sin(rad), height - maxShift * Math.cos(rad));
+                points[3] = new Point(maxShift * Math.sin(rad), height - maxShift * Math.cos(rad));
+                break;
+            case "LEFT":
+                points[0] = new Point(maxShift * Math.cos(rad), maxShift * Math.sin(rad));
+                points[1] = new Point(width, 0);
+                points[2] = new Point(width, height);
+                points[3] = new Point(maxShift * Math.cos(rad), height - maxShift * Math.sin(rad));
+                break;
+            case "RIGHT":
+                points[0] = new Point(0, 0);
+                points[1] = new Point(width - maxShift * Math.cos(rad), maxShift * Math.sin(rad));
+                points[2] = new Point(width - maxShift * Math.cos(rad), height - maxShift * Math.sin(rad));
+                points[3] = new Point(0, height);
+                break;
+            default:
+                throw new IllegalArgumentException("Неизвестное направление: " + direction);
+        }
+
+        return points;
+    }
 }

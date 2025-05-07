@@ -168,4 +168,25 @@ public class ImageApiTransformationsTest {
         api.saveImage(outputDir + "shifted_50x30.jpeg", shifted);
     }
 
+    @Test
+    public void testDeviationPerspectiveTransform() {
+        // Тестируем разные направления и углы
+        String[] directions = {"TOP", "BOTTOM", "LEFT", "RIGHT"};
+        double[] angles = {15, 30, 45};
+        double[] intensities = {0.5, 0.7, 1.0};
+
+        for (String dir : directions) {
+            for (double angle : angles) {
+                for (double intensity : intensities) {
+                    Mat result = api.perspectiveTransform(
+                            original, angle, dir, intensity);
+
+                    String filename = String.format("perspective_%s_angle%.0f_int%.1f.jpg",
+                            dir.toLowerCase(), angle, intensity);
+                    api.saveImage(outputDir + filename, result);
+                }
+            }
+        }
+    }
+
 }

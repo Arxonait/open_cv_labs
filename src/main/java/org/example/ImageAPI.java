@@ -107,8 +107,16 @@ public class ImageAPI {
         return processor.shiftImage(img, shiftX, shiftY);
     }
 
-//    public Mat perspectiveTransform(Mat img) {
-//        log.info("Applying perspective transformation");
-//        return transformations.perspectiveTransform(img);
-//    }
+    /**
+     * Трансформация перспективы по заданному отклонению (углу)
+     * @param img исходное изображение
+     * @param angle угол отклонения (в градусах)
+     * @param direction направление отклонения (TOP, BOTTOM, LEFT, RIGHT)
+     * @param intensity интенсивность эффекта (0-1)
+     * @return преобразованное изображение
+     */
+    public Mat perspectiveTransform(Mat img, double angle, String direction, double intensity) {
+        log.info("Applying perspective transformation");
+        return processor.transformPerspectiveWithDeviation(img, angle, direction, intensity);
+    }
 }
