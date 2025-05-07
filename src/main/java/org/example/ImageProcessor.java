@@ -203,42 +203,66 @@ public class ImageProcessor {
     }
 
     /**
-     * Вращение изображения с обрезкой или без обрезки.
+     * Вращение изображения вокруг его центра с возможностью сохранить всё содержимое
+     * (без обрезки) или оставить оригинальный размер (с возможной обрезкой).
+     *
+     * @param mat          исходное изображение (Mat)
+     * @param angle        угол поворота в градусах (по часовой стрелке)
+     * @param keepContent  если true — сохраняется всё изображение без обрезки (увеличится размер), иначе изображение будет обрезано
+     * @return повернутое изображение
      */
     public Mat rotateImage(Mat mat, double angle, boolean keepContent) {
+        // Центр изображения (вокруг него происходит вращение)
         Point center = new Point(mat.cols() / 2.0, mat.rows() / 2.0);
 
+        // Получаем матрицу поворота (с масштабом 1.0)
         Mat rotMat = Imgproc.getRotationMatrix2D(center, angle, 1.0);
 
-        Size size = keepContent ? getRotatedSize(mat, angle) : new Size(mat.width(), mat.height());
-
-        // Если keepContent == true, нужно сместить матрицу поворота так, чтобы центр остался в центре
+        Size size;
         if (keepContent) {
-            Size newSize = size;
-            double dx = (newSize.width - mat.width()) / 2.0;
-            double dy = (newSize.height - mat.height()) / 2.0;
+            // Вычисляем новый размер, который будет вмещать всё изображение после поворота
+            size = getRotatedSize(mat, angle);
+
+            // Смещение центра изображения, чтобы оно было выровнено в новой области
+            double dx = (size.width - mat.width()) / 2.0;
+            double dy = (size.height - mat.height()) / 2.0;
+
+            // Корректируем смещение в матрице поворота
             rotMat.put(0, 2, rotMat.get(0, 2)[0] + dx);
             rotMat.put(1, 2, rotMat.get(1, 2)[0] + dy);
+        } else {
+            // Размер остаётся прежним — возможна обрезка изображения
+            size = new Size(mat.width(), mat.height());
         }
 
-        Mat rotated = new Mat();
+        Mat rotated = new Mat(); // Результирующее изображение
+
+        // Применяем поворот к изображению с интерполяцией и чёрным фоном
         Imgproc.warpAffine(mat, rotated, rotMat, size, Imgproc.INTER_LINEAR, Core.BORDER_CONSTANT, new Scalar(0, 0, 0));
 
-        return rotated;
+        return rotated; // Возвращаем повернутое изображение
     }
 
     /**
-     * Вспомогательный метод для расчета размера без обрезки.
+     * Вычисляет размер изображения, необходимый для размещения всего содержимого
+     * после поворота без обрезки.
+     *
+     * @param mat   исходное изображение
+     * @param angle угол поворота в градусах
+     * @return новый размер изображения, чтобы оно полностью вмещало повёрнутое содержимое
      */
     private Size getRotatedSize(Mat mat, double angle) {
-        double radians = Math.toRadians(angle);
-        double sin = Math.abs(Math.sin(radians));
-        double cos = Math.abs(Math.cos(radians));
+        double radians = Math.toRadians(angle); // Перевод угла в радианы
+        double sin = Math.abs(Math.sin(radians)); // Синус угла (по модулю)
+        double cos = Math.abs(Math.cos(radians)); // Косинус угла (по модулю)
 
+        // Вычисляем ширину и высоту с учётом поворота
         int newWidth = (int) (mat.height() * sin + mat.width() * cos);
         int newHeight = (int) (mat.height() * cos + mat.width() * sin);
+
         return new Size(newWidth, newHeight);
     }
+
 
     /**
      * Сдвиг изображения на заданное количество пикселей по осям X и Y.
