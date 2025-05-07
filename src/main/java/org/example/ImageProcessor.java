@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ImageProcessor {
@@ -143,44 +142,64 @@ public class ImageProcessor {
 
     /**
      * Повтор изображения по вертикали и горизонтали.
+     *
+     * @param mat исходное изображение (Mat)
+     * @param nx  количество повторений по горизонтали
+     * @param ny  количество повторений по вертикали
+     * @return изображение, повторённое nx раз по горизонтали и ny раз по вертикали
      */
     public Mat repeatImage(Mat mat, int nx, int ny) {
-        Mat repeated = new Mat();
-        Core.repeat(mat, ny, nx, repeated);
-        return repeated;
+        Mat repeated = new Mat(); // Создаём выходное изображение
+        Core.repeat(mat, ny, nx, repeated); // Повторяем изображение с заданным числом копий
+        return repeated; // Возвращаем результат
     }
 
     /**
-     * Объединение нескольких изображений в одно.
+     * Объединение списка изображений в одно изображение по горизонтали или вертикали.
+     *
+     * @param mats       список изображений (Mat), которые нужно объединить
+     * @param horizontal если true — объединить по горизонтали, иначе — по вертикали
+     * @return объединённое изображение
      */
     public Mat concatImages(List<Mat> mats, boolean horizontal) {
-
-        Mat result = new Mat();
+        Mat result = new Mat(); // Создаём выходное изображение
         if (horizontal) {
-            Core.hconcat(mats, result);
+            Core.hconcat(mats, result); // Объединяем изображения по горизонтали
         } else {
-            Core.vconcat(mats, result);
+            Core.vconcat(mats, result); // Объединяем изображения по вертикали
         }
-        return result;
-    }
-
-    public Mat flipImage(Mat mat, boolean horizontal) {
-        Mat flip = new Mat();
-        int flag_horizontal = 1;
-        if (!horizontal) {
-            flag_horizontal = 0;
-        }
-        Core.flip(mat, flip, flag_horizontal);
-        return flip;
+        return result; // Возвращаем результат
     }
 
     /**
-     * Изменение размера изображения.
+     * Отразить изображение по горизонтали или вертикали.
+     *
+     * @param mat        исходное изображение (Mat)
+     * @param horizontal если true — отражение по горизонтали, иначе — по вертикали
+     * @return отражённое изображение
+     */
+    public Mat flipImage(Mat mat, boolean horizontal) {
+        Mat flip = new Mat(); // Создаём выходное изображение
+        int flag_horizontal = 1; // Флаг для отражения по горизонтали
+        if (!horizontal) {
+            flag_horizontal = 0; // Флаг для отражения по вертикали
+        }
+        Core.flip(mat, flip, flag_horizontal); // Отражаем изображение
+        return flip; // Возвращаем результат
+    }
+
+    /**
+     * Изменение размера изображения до заданной ширины и высоты.
+     *
+     * @param mat    исходное изображение (Mat)
+     * @param width  новая ширина изображения
+     * @param height новая высота изображения
+     * @return изображение, изменённое до заданного размера
      */
     public Mat resizeImage(Mat mat, int width, int height) {
-        Mat resized = new Mat();
-        Imgproc.resize(mat, resized, new Size(width, height));
-        return resized;
+        Mat resized = new Mat(); // Создаём объект для результата
+        Imgproc.resize(mat, resized, new Size(width, height)); // Изменяем размер изображения
+        return resized; // Возвращаем результат
     }
 
     /**
@@ -191,7 +210,16 @@ public class ImageProcessor {
 
         Mat rotMat = Imgproc.getRotationMatrix2D(center, angle, 1.0);
 
-        Size size = keepContent ? new Size(mat.width(), mat.height()) : getRotatedSize(mat, angle);
+        Size size = keepContent ? getRotatedSize(mat, angle) : new Size(mat.width(), mat.height());
+
+        // Если keepContent == true, нужно сместить матрицу поворота так, чтобы центр остался в центре
+        if (keepContent) {
+            Size newSize = size;
+            double dx = (newSize.width - mat.width()) / 2.0;
+            double dy = (newSize.height - mat.height()) / 2.0;
+            rotMat.put(0, 2, rotMat.get(0, 2)[0] + dx);
+            rotMat.put(1, 2, rotMat.get(1, 2)[0] + dy);
+        }
 
         Mat rotated = new Mat();
         Imgproc.warpAffine(mat, rotated, rotMat, size, Imgproc.INTER_LINEAR, Core.BORDER_CONSTANT, new Scalar(0, 0, 0));
@@ -213,16 +241,27 @@ public class ImageProcessor {
     }
 
     /**
-     * Сдвиг изображения на заданное количество пикселей.
+     * Сдвиг изображения на заданное количество пикселей по осям X и Y.
+     *
+     * @param mat    исходное изображение (Mat)
+     * @param shiftX сдвиг по горизонтали (в пикселях). Положительное значение — вправо.
+     * @param shiftY сдвиг по вертикали (в пикселях). Положительное значение — вниз.
+     * @return изображение, сдвинутое на указанные значения
      */
     public Mat shiftImage(Mat mat, int shiftX, int shiftY) {
 
-        Mat translationMat = Mat.eye(2, 3, CvType.CV_32F);
+        // Создаём матрицу трансформации 2x3 для аффинного преобразования
+        Mat translationMat = Mat.eye(2, 3, CvType.CV_32F); // Единичная матрица с дополнительным столбцом
+
+        // Устанавливаем значения сдвига: shiftX — по X, shiftY — по Y
         translationMat.put(0, 2, shiftX);
         translationMat.put(1, 2, shiftY);
 
-        Mat shifted = new Mat();
+        Mat shifted = new Mat(); // Создаём матрицу для результата
+
+        // Применяем аффинное преобразование к изображению
         Imgproc.warpAffine(mat, shifted, translationMat, mat.size());
-        return shifted;
+
+        return shifted; // Возвращаем сдвинутое изображение
     }
 }
