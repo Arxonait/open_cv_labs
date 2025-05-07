@@ -125,6 +125,37 @@ public class ImageProcessor {
     }
 
     /**
+     * Применяет оператор Собеля к изображению
+     * @param srcImage исходное изображение
+     * @param dx порядок производной по x
+     * @param dy порядок производной по y
+     * @param ksize размер ядра (1, 3, 5 или 7)
+     * @param scale масштабный коэффициент
+     * @param delta смещение
+     * @param borderType тип границы (BORDER_DEFAULT и т.д.)
+     * @return Mat с результатом применения оператора Собеля
+     */
+    public Mat applySobel(Mat srcImage, int dx, int dy, int ksize,
+                                 double scale, double delta, int borderType) {
+        // Конвертируем в grayscale если нужно
+        Mat grayImage = new Mat();
+        if (srcImage.channels() > 1) {
+            Imgproc.cvtColor(srcImage, grayImage, Imgproc.COLOR_BGR2GRAY);
+        } else {
+            grayImage = srcImage.clone();
+        }
+
+        Mat result = new Mat();
+        Imgproc.Sobel(grayImage, result, CvType.CV_32F, dx, dy, ksize, scale, delta, borderType);
+
+        // Конвертируем в 8-битное изображение для сохранения
+        Mat absResult = new Mat();
+        Core.convertScaleAbs(result, absResult);
+
+        return absResult;
+    }
+
+    /**
      * Применяет оператор Лапласа к изображению.
      */
     public Mat laplaceOperatorTest(Mat mat) {

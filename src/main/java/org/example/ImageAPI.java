@@ -64,15 +64,17 @@ public class ImageAPI {
     }
 
     // --- Методы для трансформаций через API ---
-    public Mat applySobel(Mat img, int dx, int dy) {
-        log.info("Applying Sobel operator with dx=" + dx + ", dy=" + dy);
-        return transformations.applySobel(img, dx, dy);
+    public Mat applySobel(Mat img, int dx, int dy, int ksize,
+                          double scale, double delta, int borderType) {
+        log.info("Applying Sobel operator with dx=" + dx + ", dy=" + dy + ", kernel size: " + ksize + ", scale: " + scale +
+                ", delta: " + delta + ", border type: " + borderType);
+        return processor.applySobel(img, dx, dy, ksize, scale, delta, borderType);
     }
 
-    public Mat applyLaplace(Mat img) {
-        log.info("Applying Laplace operator");
-        return transformations.applyLaplace(img);
-    }
+//    public Mat applyLaplace(Mat img) {
+//        log.info("Applying Laplace operator");
+//        return transformations.applyLaplace(img);
+//    }
 
     public Mat flip(Mat img, boolean horizontal) {
         log.info("Flipping image horizontal " + horizontal);
@@ -104,8 +106,8 @@ public class ImageAPI {
         return processor.shiftImage(img, shiftX, shiftY);
     }
 
-    public Mat perspectiveTransform(Mat img) {
-        log.info("Applying perspective transformation");
-        return transformations.perspectiveTransform(img);
-    }
+//    public Mat perspectiveTransform(Mat img) {
+//        log.info("Applying perspective transformation");
+//        return transformations.perspectiveTransform(img);
+//    }
 }

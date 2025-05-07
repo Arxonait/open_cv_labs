@@ -2,6 +2,7 @@ package org.example;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
@@ -29,6 +30,18 @@ public class ImageApiTransformationsTest {
         original = api.loadImage(srcImage);
         api.showImage(original);
         api.saveImage(outputDir + "original.jpeg", original);
+    }
+
+    @Test
+    public void testSobelX() {
+        Mat sobelX = api.applySobel(original, 1, 0, 3, 1, 0, Core.BORDER_DEFAULT);
+        api.saveImage(outputDir + "sobelX.jpeg", sobelX);
+    }
+
+    @Test
+    public void testSobelY() {
+        Mat sobelY = api.applySobel(original, 0, 1, 3, 1, 0, Core.BORDER_DEFAULT);
+        api.saveImage(outputDir + "sobelY.jpeg", sobelY);
     }
 
     @Test
