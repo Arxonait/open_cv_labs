@@ -1,6 +1,5 @@
-package org.example;
+package org.example.filters;
 
-import org.example.FilterResults;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;

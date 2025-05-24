@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.filters.FilterResults;
+import org.example.filters.FilterUtils;
 import org.junit.Test;
 
 import java.nio.file.Files;
