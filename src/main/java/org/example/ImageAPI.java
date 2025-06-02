@@ -147,4 +147,9 @@ public class ImageAPI {
         Mat image = SegmentationUtils.getImageDifference(original, processed);
         return image;
     }
+
+    public int getCountObj(Mat image, int targetWidth, int targetHeight, double tolerance) {
+        log.info("Get count rectangular objects from image");
+        return SegmentationUtils.countRectangularObjects(image, targetWidth, targetHeight, tolerance);
+    }
 }

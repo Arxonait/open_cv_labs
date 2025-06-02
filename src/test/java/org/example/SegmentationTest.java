@@ -9,6 +9,8 @@ import org.opencv.core.Point;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.junit.Assert.assertEquals;
+
 public class SegmentationTest {
 
     private static ImageAPI api;
@@ -48,5 +50,11 @@ public class SegmentationTest {
         api.saveImage(outputDir + "car_py_down.jpeg", image);
         Mat diff = api.getImageDifference(original, image);
         api.saveImage(outputDir + "car_py_down_diff.jpeg", diff);
+    }
+
+    @Test
+    public void testCountRecObj() {
+        int found = api.getCountObj(original, 10, 5, 10);
+        assertEquals(82, found);
     }
 }
