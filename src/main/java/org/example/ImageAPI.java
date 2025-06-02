@@ -3,6 +3,8 @@ package org.example;
 import org.opencv.core.Core;
 import org.apache.log4j.Logger;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 
 import java.util.Locale;
 import java.util.List;
@@ -119,4 +121,25 @@ public class ImageAPI {
         log.info("Applying perspective transformation");
         return processor.transformPerspectiveWithDeviation(img, angle, direction, intensity);
     }
+
+    // ---
+
+    public Mat floodFillWithParams(Mat image, Point seedPoint, Scalar fillColor, Scalar loDiff, Scalar upDiff) {
+        log.info("Applying flood fill image");
+        SegmentationUtils.floodFillWithParams(image, seedPoint, fillColor, loDiff, upDiff);
+        return image;
+    }
+
+    public Mat applyPyramidDown(Mat image, int times) {
+        log.info("Applying pyramid down image");
+        SegmentationUtils.applyPyramidDown(image, times);
+        return image;
+    }
+
+    public Mat applyPyramidUp(Mat image, int times) {
+        log.info("Applying pyramid up image");
+        SegmentationUtils.applyPyramidUp(image, times);
+        return image;
+    }
+
 }
