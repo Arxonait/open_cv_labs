@@ -12,8 +12,8 @@ public class MorphologyTest {
     public void testApplyMorphology() throws Exception {
         ImageAPI api = new ImageAPI();
 
-        String imgPath = "/home/vboxuser/Pictures/adv.png";
-        String outDir = "/home/vboxuser/Pictures/morphology_results/";
+        String imgPath = "src/test/test_dir/adv.png";
+        String outDir = "src/test/test_dir/morphology_results/";
         Files.createDirectories(Paths.get(outDir));
 
         int[] kernelSizes = {3, 5, 7, 9, 13, 15};
