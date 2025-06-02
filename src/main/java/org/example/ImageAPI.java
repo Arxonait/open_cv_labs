@@ -152,4 +152,16 @@ public class ImageAPI {
         log.info("Get count rectangular objects from image");
         return SegmentationUtils.countRectangularObjects(image, targetWidth, targetHeight, tolerance);
     }
+
+    // ---
+
+    public Mat getImageEdges(Mat src, int blurKernelSize, double lowThreshold, double highThreshold, boolean useOtsu) {
+        log.info("Get image edges");
+        return SearchObj.detectEdges(src, blurKernelSize, lowThreshold, highThreshold, useOtsu);
+    }
+
+    public int getCountObjCanny(Mat image, int targetWidth, int targetHeight, double tolerance) {
+        log.info("Get count rectangular objects from image");
+        return SearchObj.detectRectangles(image, targetWidth, targetHeight, tolerance);
+    }
 }
