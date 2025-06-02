@@ -24,7 +24,7 @@ public class ImageApiTransformationsTest {
     public static void setUpClass() throws Exception {
         api = new ImageAPI();
         srcImage = "src/test/test_dir/car.jpeg";
-        outputDir = "/home/vboxuser/Pictures/image_transformations_results_3/";
+        outputDir = "src/test/test_dir/image_transformations_results_3/";
 
         Files.createDirectories(Paths.get(outputDir));
         original = api.loadImage(srcImage);

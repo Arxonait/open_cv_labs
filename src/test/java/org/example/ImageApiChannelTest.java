@@ -16,8 +16,8 @@ public class ImageApiChannelTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         api = new ImageAPI();
-        srcImage = "/home/vboxuser/Pictures/car.jpeg";
-        outputDir = "/home/vboxuser/Pictures/image_processing_results/";
+        srcImage = "src/test/test_dir/car.jpeg";
+        outputDir = "src/test/test_dir/image_processing_results/";
 
         Files.createDirectories(Paths.get(outputDir));
         original = api.loadImage(srcImage);
