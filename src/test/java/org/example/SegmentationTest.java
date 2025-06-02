@@ -38,11 +38,15 @@ public class SegmentationTest {
     public void testPyUp() {
         Mat image = api.applyPyramidUp(original, 2);
         api.saveImage(outputDir + "car_py_up.jpeg", image);
+        Mat diff = api.getImageDifference(original, image);
+        api.saveImage(outputDir + "car_py_up_diff.jpeg", diff);
     }
 
     @Test
     public void testPyDown() {
         Mat image = api.applyPyramidDown(original, 2);
         api.saveImage(outputDir + "car_py_down.jpeg", image);
+        Mat diff = api.getImageDifference(original, image);
+        api.saveImage(outputDir + "car_py_down_diff.jpeg", diff);
     }
 }

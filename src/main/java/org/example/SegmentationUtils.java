@@ -1,14 +1,12 @@
 package org.example;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.Random;
 
 public class SegmentationUtils {
+
     public static void floodFillWithParams(Mat image, Point seedPoint, Scalar fillColor, Scalar loDiff, Scalar upDiff) {
         if (fillColor == null) {
             Random rand = new Random();
@@ -39,6 +37,12 @@ public class SegmentationUtils {
             Imgproc.pyrUp(result, temp);
             result = temp;
         }
+        return result;
+    }
+
+    public static Mat getImageDifference(Mat original, Mat processed) {
+        Mat result = new Mat();
+        Core.subtract(original, processed, result);
         return result;
     }
 }

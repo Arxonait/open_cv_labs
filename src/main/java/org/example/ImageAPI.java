@@ -142,4 +142,9 @@ public class ImageAPI {
         return image;
     }
 
+    public Mat getImageDifference(Mat original, Mat processed) {
+        log.info("Get difference image");
+        Mat image = SegmentationUtils.getImageDifference(original, processed);
+        return image;
+    }
 }
