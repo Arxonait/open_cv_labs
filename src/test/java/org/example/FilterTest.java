@@ -12,8 +12,8 @@ public class FilterTest {
     public void testApplyFilters() throws Exception {
         ImageAPI api = new ImageAPI();
 
-        String imgPath = "/home/vboxuser/Pictures/car.jpeg";
-        String outDir = "/home/vboxuser/Pictures/filter_results/";
+        String imgPath = "src/test/test_dir/car.jpeg";
+        String outDir = "src/test/test_dir/filter_results/";
         Files.createDirectories(Paths.get(outDir));
 
         int[] kernelSizes = {3, 5, 7};
